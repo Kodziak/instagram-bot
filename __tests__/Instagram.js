@@ -7,7 +7,7 @@ describe("Instagram-bot.", () => {
 
   beforeAll(async () => {
     await LoginUtils.openBrowserWithPage(loginPage);
-    jest.setTimeout(10 * 1000);
+    jest.setTimeout(10000 * 1000);
   });
 
   describe("Let's make some subs!", () => {
