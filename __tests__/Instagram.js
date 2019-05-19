@@ -14,7 +14,7 @@ describe("Instagram-bot.", () => {
 
   afterAll(async () => {
     await page.close();
-    jest.setTimeout(10 * 1000);
+    jest.setTimeout(100 * 1000);
   });
 
   describe("Let's make some subs!", () => {
@@ -26,11 +26,22 @@ describe("Instagram-bot.", () => {
     });
 
     test("Goto tag", async () => {
-      await page.goto(`https://www.instagram.com/explore/tags/${tag}/`);
+      // await page.goto(`https://www.instagram.com/explore/tags/${tag}/`, {
+      //   waitUntil: 'load'
+      // });
 
-      await page.waitForSelector('._7UhW9');
-      let properTag = await page.$eval('._7UhW9', el => el.textContent);
-      await expect(properTag).toBe(`#${tag}`);
+      await page.waitForSelector('.XTCLo');
+      await page.click('.XTCLo');
+
+      await page.keyboard.type('#car');
+      await page.waitFor(500);
+      await page.click(`[href="/explore/tags/${tag}/"]`);
     });
+
+    test("Check tag", async () => {
+      await page.waitForSelector('h1');
+      let properTag = await page.$eval('h1', el => el.textContent);
+      await expect(properTag).toBe(`#${tag}`);
+    })
   });
 });
