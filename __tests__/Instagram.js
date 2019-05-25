@@ -33,39 +33,55 @@ describe("Instagram-bot.", () => {
       });
 
       //Click on photo
-      await page.waitForSelector(".v1Nh3");
-      let images = await page.$$(".v1Nh3");
-      // console.log(images, images.length);
+      await page.waitForSelector(".Nnq7C");
 
-      await page.click(".v1Nh3");
-      await page.waitFor(RANDOM_TIME);
+      for (let row = 1; row < 4; row++) {
+        for (let img = 1; img < 4; img++) {
+          await page.waitForSelector(
+            `.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`
+          );
 
-      //Click on heart
-      let heartSelector = await page.evaluate(() => {
-        return document.querySelector(".dCJp8").firstElementChild.className;
-      });
+          await page.click(
+            `.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`
+          );
 
-      if (heartSelector !== HEART_FILLED_SELECTOR) {
-        await page.waitForSelector('[aria-label="Like"]');
-        await page.click('[aria-label="Like"]');
-        await page.waitFor(RANDOM_TIME);
+          await page.waitFor(RANDOM_TIME);
+
+          //Click on heart
+          let isHeartFilled = await page.evaluate(selector => {
+            return document
+              .querySelector(".dCJp8")
+              .firstElementChild.classList.contains(selector);
+          }, HEART_FILLED_SELECTOR);
+
+          if (!isHeartFilled) {
+            await page.waitForSelector('[aria-label="Like"]');
+            await page.click('[aria-label="Like"]');
+            await page.waitFor(RANDOM_TIME);
+          }
+
+          //Follow user
+          let isFollowing = await page.evaluate(() => {
+            return document
+              .querySelector(".M9sTE .sqdOP")
+              .classList.contains("_8A5w5");
+          });
+
+          if (!isFollowing) {
+            await page.waitForSelector(".M9sTE .sqdOP");
+            await page.click(".M9sTE .sqdOP");
+            await page.waitFor(RANDOM_TIME);
+          }
+
+          // await page.type(".Ypffh", "Excellent picture!");
+          // await page.waitFor(2000);
+          // await page.click('[type="submit"]');
+          // await page.waitFor(2000);
+
+          await page.click(".ckWGn");
+          await page.waitFor(RANDOM_TIME);
+        }
       }
-
-      let comments = await page.$$(".TlrDj");
-      comments = Array.from(comments);
-      comments.forEach(comment => {
-        console.log(comment.textContent);
-      });
-      // comments.forEach(comment => {
-      //   console.log(comment.textContent);
-      // });
-
-      // await page.type(".Ypffh", "Excellent picture!");
-      // await page.waitFor(2000);
-      // await page.click('[type="submit"]');
-      // await page.waitFor(2000);
-
-      await page.click(".ckWGn");
     });
   });
 });
