@@ -16,7 +16,7 @@ exports.openBrowserWithPage = async function(url, waitUntil) {
   waitUntil = waitUntil || ["load"];
   url = url || "https://google.com";
 
-  await page.setViewport({width: 720, height: 900})
+  await page.setViewport({ width: 1500, height: 900 });
   await page.goto(url, {
     waitUntil: waitUntil
   });
