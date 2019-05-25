@@ -1,23 +1,18 @@
 const puppeteer = require("puppeteer");
+const URL = "https://www.instagram.com/accounts/login/";
+const URLTags = "https://www.instagram.com/explore/tags";
 const LoginUtils = require("../utils/LoginUtils");
 const config = require("../config.js");
 const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5 u-__7";
-const TAG = "car";
-const RANDOM_TIME = 2250 + Math.floor(Math.random() * 250);
+const FOLLOWED_USER_SELECTOR = "_8A5w5";
+const TAG = "polishgirl";
+const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
 
 describe("Instagram-bot.", () => {
-  const loginPage = "https://www.instagram.com/accounts/login/";
-
   beforeAll(async () => {
     await puppeteer.launch();
-    await LoginUtils.openBrowserWithPage(loginPage);
+    await LoginUtils.openBrowserWithPage(URL);
     jest.setTimeout(100 * 1000);
-  });
-
-  afterAll(async () => {
-    // await page.close();
-    // await this._browser.close();
-    // jest.setTimeout(100 * 1000);
   });
 
   describe("Let's make some subs!", () => {
@@ -28,11 +23,10 @@ describe("Instagram-bot.", () => {
     });
 
     test("Goto tag", async () => {
-      await page.goto(`https://www.instagram.com/explore/tags/${TAG}/`, {
+      await page.goto(`${URLTags}/${TAG}/`, {
         waitUntil: "load"
       });
 
-      //Click on photo
       await page.waitForSelector(".Nnq7C");
 
       for (let row = 1; row < 4; row++) {
@@ -61,11 +55,11 @@ describe("Instagram-bot.", () => {
           }
 
           //Follow user
-          let isFollowing = await page.evaluate(() => {
+          let isFollowing = await page.evaluate(selector => {
             return document
               .querySelector(".M9sTE .sqdOP")
-              .classList.contains("_8A5w5");
-          });
+              .classList.contains(selector);
+          }, FOLLOWED_USER_SELECTOR);
 
           if (!isFollowing) {
             await page.waitForSelector(".M9sTE .sqdOP");
