@@ -70,7 +70,6 @@ describe("Instagram-bot.", () => {
           // await page.type(".Ypffh", "Excellent picture!");
           // await page.waitFor(2000);
           // await page.click('[type="submit"]');
-          // await page.waitFor(2000);
 
           await page.click(".ckWGn");
           await page.waitFor(RANDOM_TIME);
