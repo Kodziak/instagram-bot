@@ -5,7 +5,7 @@ const LoginUtils = require("../utils/LoginUtils");
 const config = require("../config.js");
 const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5 u-__7";
 const FOLLOWED_USER_SELECTOR = "_8A5w5";
-const TAG = "polishgirl";
+const TAGS = ["polishgirl", "car"];
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
 
 // Google Sheet dependencies
@@ -39,7 +39,7 @@ describe("Instagram-bot.", () => {
       await page.waitForSelector(".aOOlW");
     });
 
-    test("Goto tag", async () => {
+    test.each(TAGS)("Goto tag", async TAG => {
       await page.goto(`${URLTags}/${TAG}/`, {
         waitUntil: "load"
       });
