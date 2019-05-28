@@ -8,6 +8,23 @@ const FOLLOWED_USER_SELECTOR = "_8A5w5";
 const TAG = "polishgirl";
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
 
+// Google Sheet dependencies
+const GoogleSpreadsheet = require("google-spreadsheet");
+const { promisify } = require("util");
+const creds = require("../g-credentials.json");
+
+async function accessSpreadsheet(followed) {
+  const doc = new GoogleSpreadsheet(
+    "1518O0UfylfzujNqenkoGnpjBPnNMJ4EttLXpIY3g2hM"
+  );
+  await promisify(doc.useServiceAccountAuth)(creds);
+  const info = await promisify(doc.getInfo)();
+  const sheet = info.worksheets[0];
+
+  // Add row to sheet depends on headers.
+  await promisify(sheet.addRow)(followed.nickname, followed.since);
+}
+
 describe("Instagram-bot.", () => {
   beforeAll(async () => {
     await puppeteer.launch();
@@ -70,6 +87,9 @@ describe("Instagram-bot.", () => {
           // await page.type(".Ypffh", "Excellent picture!");
           // await page.waitFor(2000);
           // await page.click('[type="submit"]');
+
+          // followed - an object contains 2 properties: nickname and since
+          await accessSpreadsheet(followed);
 
           await page.click(".ckWGn");
           await page.waitFor(RANDOM_TIME);
