@@ -22,7 +22,7 @@ async function accessSpreadsheet(followed) {
   const sheet = info.worksheets[0];
 
   // Add row to sheet depends on headers.
-  await promisify(sheet.addRow)(followed.nickname, followed.since);
+  await promisify(sheet.addRow)(followed);
 }
 
 describe("Instagram-bot.", () => {
@@ -58,6 +58,7 @@ describe("Instagram-bot.", () => {
 
           await page.waitFor(RANDOM_TIME);
 
+          // TODO: make ComponentsUtils and move functions there.
           //Click on heart
           let isHeartFilled = await page.evaluate(selector => {
             return document
@@ -84,11 +85,13 @@ describe("Instagram-bot.", () => {
             await page.waitFor(RANDOM_TIME);
           }
 
+          // TODO: Implement create comment function - depends on tags.
           // await page.type(".Ypffh", "Excellent picture!");
           // await page.waitFor(2000);
           // await page.click('[type="submit"]');
 
-          // followed - an object contains 2 properties: nickname and since
+          // TODO: Implement create followed object.
+          // followed - an object contains 2 properties: nickname and since.
           await accessSpreadsheet(followed);
 
           await page.click(".ckWGn");
@@ -98,3 +101,5 @@ describe("Instagram-bot.", () => {
     });
   });
 });
+
+// TODO: Create a unfollow function after n days.
