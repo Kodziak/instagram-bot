@@ -79,19 +79,6 @@ describe("Instagram-bot.", () => {
               .classList.contains(selector);
           }, FOLLOWED_USER_SELECTOR);
 
-          if (!isFollowing) {
-            await page.waitForSelector(".M9sTE .sqdOP");
-            await page.click(".M9sTE .sqdOP");
-            await page.waitFor(RANDOM_TIME);
-          }
-
-          // TODO: Implement create comment function - depends on tags.
-          // await page.type(".Ypffh", "Excellent picture!");
-          // await page.waitFor(2000);
-          // await page.click('[type="submit"]');
-
-          // TODO: Implement create followed object.
-          // followed - an object contains 2 properties: nickname and since.
           let nickname = await page.$eval(
             ".PdwC2 .FPmhX",
             el => el.textContent
@@ -103,7 +90,19 @@ describe("Instagram-bot.", () => {
           let followed = {};
           followed.nickname = nickname;
           followed.since = date;
-          await accessSpreadsheet(followed);
+
+          if (!isFollowing) {
+            await page.waitForSelector(".M9sTE .sqdOP");
+            await page.click(".M9sTE .sqdOP");
+            await accessSpreadsheet(followed);
+
+            await page.waitFor(RANDOM_TIME);
+          }
+
+          // TODO: Implement create comment function - depends on tags.
+          // await page.type(".Ypffh", "Excellent picture!");
+          // await page.waitFor(2000);
+          // await page.click('[type="submit"]');
 
           await page.click(".ckWGn");
           await page.waitFor(RANDOM_TIME);
