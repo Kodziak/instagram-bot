@@ -5,7 +5,7 @@ const LoginUtils = require("../utils/LoginUtils");
 const config = require("../config.js");
 const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5 u-__7";
 const FOLLOWED_USER_SELECTOR = "_8A5w5";
-const TAGS = ["polishgirl", "car"];
+const TAGS = ["girl", "code"];
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
 
 // Google Sheet dependencies
@@ -92,6 +92,17 @@ describe("Instagram-bot.", () => {
 
           // TODO: Implement create followed object.
           // followed - an object contains 2 properties: nickname and since.
+          let nickname = await page.$eval(
+            ".PdwC2 .FPmhX",
+            el => el.textContent
+          );
+          let date = new Date();
+          date = `${date.getDate()}-${date.getMonth() +
+            1}-${date.getFullYear()}`;
+
+          let followed = {};
+          followed.nickname = nickname;
+          followed.since = date;
           await accessSpreadsheet(followed);
 
           await page.click(".ckWGn");
