@@ -19,11 +19,13 @@ exports.commentPhoto = async function(page, username) {
 };
 
 exports.likePhoto = async function(page) {
-  const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5 u-__7";
+  const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5";
 
   let isHeartFilled = await page.evaluate(selector => {
-    return document.querySelector(".dCJp8").firstElementChild.classList.contains(selector);
+    return document.querySelector(".ltpMr .dCJp8").firstElementChild.classList.contains(selector);
   }, HEART_FILLED_SELECTOR);
+
+  console.log(isHeartFilled);
 
   if (!isHeartFilled) {
     await page.waitForSelector('[aria-label="Like"]');
@@ -33,17 +35,13 @@ exports.likePhoto = async function(page) {
 };
 
 exports.followUser = async function(page) {
+  const FOLLOWED_USER_SELECTOR = "_8A5w5";
+
   let isFollowing = await page.evaluate(selector => {
     return document.querySelector(".M9sTE .sqdOP").classList.contains(selector);
   }, FOLLOWED_USER_SELECTOR);
 
-  let nickname = await page.$eval(".PdwC2 .FPmhX", el => el.textContent);
-  let date = new Date();
-  date = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-
-  let followed = {};
-  followed.nickname = nickname;
-  followed.since = date;
+  let followed = exports.followedUserData(page);
 
   if (!isFollowing) {
     await page.waitForSelector(".M9sTE .sqdOP");
@@ -52,4 +50,16 @@ exports.followUser = async function(page) {
 
     await page.waitFor(RANDOM_TIME);
   }
+};
+
+exports.followedUserData = async function(page) {
+  let nickname = await page.$eval(".PdwC2 .FPmhX", el => el.textContent);
+  let date = new Date();
+  date = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+
+  let followed = {};
+  followed.nickname = nickname;
+  followed.since = date;
+
+  return followed;
 };

@@ -4,9 +4,9 @@ const URLTags = "https://www.instagram.com/explore/tags";
 const LoginUtils = require("../utils/LoginUtils");
 const PictureUtils = require("../utils/PictureUtils");
 const config = require("../config.js");
-const FOLLOWED_USER_SELECTOR = "_8A5w5";
 const TAGS = ["girl", "code"];
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
+let followed;
 
 // Google Sheet dependencies
 const GoogleSpreadsheet = require("google-spreadsheet");
@@ -56,26 +56,9 @@ describe("Instagram-bot.", () => {
           await PictureUtils.likePhoto(page);
 
           //Follow user
-          let isFollowing = await page.evaluate(selector => {
-            return document.querySelector(".M9sTE .sqdOP").classList.contains(selector);
-          }, FOLLOWED_USER_SELECTOR);
+          await PictureUtils.followUser(page);
 
-          let nickname = await page.$eval(".PdwC2 .FPmhX", el => el.textContent);
-          let date = new Date();
-          date = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
-
-          let followed = {};
-          followed.nickname = nickname;
-          followed.since = date;
-
-          if (!isFollowing) {
-            await page.waitForSelector(".M9sTE .sqdOP");
-            await page.click(".M9sTE .sqdOP");
-            await accessSpreadsheet(followed);
-
-            await page.waitFor(RANDOM_TIME);
-          }
-
+          //Comment photo
           await PictureUtils.commentPhoto(page, "_jacos1_");
 
           await page.click(".ckWGn");
