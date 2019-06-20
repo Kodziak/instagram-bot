@@ -8,21 +8,6 @@ const TAGS = ["girl", "code"];
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
 let followed;
 
-// Google Sheet dependencies
-const GoogleSpreadsheet = require("google-spreadsheet");
-const { promisify } = require("util");
-const creds = require("../g-credentials.json");
-
-async function accessSpreadsheet(followed) {
-  const doc = new GoogleSpreadsheet("1518O0UfylfzujNqenkoGnpjBPnNMJ4EttLXpIY3g2hM");
-  await promisify(doc.useServiceAccountAuth)(creds);
-  const info = await promisify(doc.getInfo)();
-  const sheet = info.worksheets[0];
-
-  // Add row to sheet depends on headers.
-  await promisify(sheet.addRow)(followed);
-}
-
 describe("Instagram-bot.", () => {
   beforeAll(async () => {
     await puppeteer.launch();
