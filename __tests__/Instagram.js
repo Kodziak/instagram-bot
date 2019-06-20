@@ -2,8 +2,8 @@ const puppeteer = require("puppeteer");
 const URL = "https://www.instagram.com/accounts/login/";
 const URLTags = "https://www.instagram.com/explore/tags";
 const LoginUtils = require("../utils/LoginUtils");
+const PictureUtils = require("../utils/PictureUtils");
 const config = require("../config.js");
-const HEART_FILLED_SELECTOR = "glyphsSpriteHeart__filled__24__red_5 u-__7";
 const FOLLOWED_USER_SELECTOR = "_8A5w5";
 const TAGS = ["girl", "code"];
 const RANDOM_TIME = 2000 + Math.floor(Math.random() * 250);
@@ -14,9 +14,7 @@ const { promisify } = require("util");
 const creds = require("../g-credentials.json");
 
 async function accessSpreadsheet(followed) {
-  const doc = new GoogleSpreadsheet(
-    "1518O0UfylfzujNqenkoGnpjBPnNMJ4EttLXpIY3g2hM"
-  );
+  const doc = new GoogleSpreadsheet("1518O0UfylfzujNqenkoGnpjBPnNMJ4EttLXpIY3g2hM");
   await promisify(doc.useServiceAccountAuth)(creds);
   const info = await promisify(doc.getInfo)();
   const sheet = info.worksheets[0];
@@ -48,44 +46,23 @@ describe("Instagram-bot.", () => {
 
       for (let row = 1; row < 4; row++) {
         for (let img = 1; img < 4; img++) {
-          await page.waitForSelector(
-            `.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`
-          );
+          await page.waitForSelector(`.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`);
 
-          await page.click(
-            `.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`
-          );
+          await page.click(`.EZdmt .Nnq7C:nth-child(${row}) .v1Nh3:nth-child(${img}) .FFVAD`);
 
           await page.waitFor(RANDOM_TIME);
 
-          // TODO: make ComponentsUtils and move functions there.
           //Click on heart
-          let isHeartFilled = await page.evaluate(selector => {
-            return document
-              .querySelector(".dCJp8")
-              .firstElementChild.classList.contains(selector);
-          }, HEART_FILLED_SELECTOR);
-
-          if (!isHeartFilled) {
-            await page.waitForSelector('[aria-label="Like"]');
-            await page.click('[aria-label="Like"]');
-            await page.waitFor(RANDOM_TIME);
-          }
+          await PictureUtils.likePhoto(page);
 
           //Follow user
           let isFollowing = await page.evaluate(selector => {
-            return document
-              .querySelector(".M9sTE .sqdOP")
-              .classList.contains(selector);
+            return document.querySelector(".M9sTE .sqdOP").classList.contains(selector);
           }, FOLLOWED_USER_SELECTOR);
 
-          let nickname = await page.$eval(
-            ".PdwC2 .FPmhX",
-            el => el.textContent
-          );
+          let nickname = await page.$eval(".PdwC2 .FPmhX", el => el.textContent);
           let date = new Date();
-          date = `${date.getDate()}-${date.getMonth() +
-            1}-${date.getFullYear()}`;
+          date = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
 
           let followed = {};
           followed.nickname = nickname;
@@ -99,10 +76,7 @@ describe("Instagram-bot.", () => {
             await page.waitFor(RANDOM_TIME);
           }
 
-          // TODO: Implement create comment function - depends on tags.
-          // await page.type(".Ypffh", "Excellent picture!");
-          // await page.waitFor(2000);
-          // await page.click('[type="submit"]');
+          await PictureUtils.commentPhoto(page, "_jacos1_");
 
           await page.click(".ckWGn");
           await page.waitFor(RANDOM_TIME);

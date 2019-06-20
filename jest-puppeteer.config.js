@@ -1,9 +1,9 @@
 module.exports = {
   launch: {
     headless: false,
-    devTools: true,
+    devtools: true,
     slowMo: 10,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    args: ["--no-sandbox", "--disable-setuid-sandbox"]
   },
   browserContext: "default"
 };
